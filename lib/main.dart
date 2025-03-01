@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,8 +15,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
         useMaterial3: true,
+        textTheme: TextTheme(
+          bodyMedium: GoogleFonts.lato(
+            fontSize: 18,
+          ),
+        ),
       ),
-      home: const MyHomePage(title: 'Tasks'),
+      home: const MyHomePage(title: 'To Do:'),
     );
   }
 }
@@ -30,8 +36,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // in order to use the text field input we need to use a TextEditingController
+  // initialize a textediting controller
+  final TextEditingController _controller = TextEditingController();
+  List<String> tasks = [];
 
-  void
+  void addTask() {
+    String enteredText = _controller.text;
+    setState(() {
+      // add list tile to listview
+      tasks.add(enteredText);
+    });
+  }
+
+  void removeTask() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,21 +64,25 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            // List of tasks
+            Expanded(
+              child: ListView.builder(
+                  itemCount: tasks.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(subtitle: Text(tasks[index]));
+                  }),
+            ),
             TextField(
+              // attach the controller to textfield
+              controller: _controller,
               decoration: InputDecoration(
                 hintText: 'Enter task name',
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                  
-                },
-                child: Text('Add'),
+              onPressed: addTask,
+              child: Text('Add'),
             ),
-            // List view to display the task list
-            // Each task in the list should have the ofllowing
-            // a checkbox to mark the task as competed a delete button to remove the task
-            
           ],
         ),
       ),
