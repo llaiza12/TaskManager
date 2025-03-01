@@ -40,12 +40,14 @@ class _MyHomePageState extends State<MyHomePage> {
   // initialize a textediting controller
   final TextEditingController _controller = TextEditingController();
   List<String> tasks = [];
+  List<bool> checked = [];
 
   void addTask() {
     String enteredText = _controller.text;
     setState(() {
       // add list tile to listview
       tasks.add(enteredText);
+      checked.add(false);
     });
   }
 
@@ -69,7 +71,14 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ListView.builder(
                   itemCount: tasks.length,
                   itemBuilder: (context, index) {
-                    return ListTile(subtitle: Text(tasks[index]));
+                    return CheckboxListTile(
+                        subtitle: Text(tasks[index]),
+                        value: checked[index],
+                        onChanged: (bool? newValue) {
+                          setState(() {
+                            checked[index] = newValue!;
+                          });
+                        });
                   }),
             ),
             TextField(
