@@ -16,12 +16,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
         useMaterial3: true,
         textTheme: TextTheme(
-          bodyMedium: GoogleFonts.lato(
+          bodyMedium: GoogleFonts.delius(
             fontSize: 18,
+            fontWeight: FontWeight.w300,
           ),
         ),
       ),
-      home: const MyHomePage(title: 'To Do:'),
+      home: const MyHomePage(title: 'Tasks'),
     );
   }
 }
@@ -36,8 +37,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // in order to use the text field input we need to use a TextEditingController
-  // initialize a textediting controller
+  // initialize a text editing controller
   final TextEditingController _controller = TextEditingController();
   List<String> tasks = [];
   List<bool> checked = [];
@@ -45,14 +45,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void addTask() {
     String enteredText = _controller.text;
     setState(() {
-      // add list tile to listview
+      // adds task to list
       tasks.add(enteredText);
       checked.add(false);
     });
-  }
-
-  void removeTask() {
-    setState(() {});
   }
 
   @override
@@ -60,9 +56,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: GoogleFonts.delius(fontSize: 40, fontWeight: FontWeight.w800),
+        ),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(25), // padding around column
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -71,26 +71,42 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ListView.builder(
                   itemCount: tasks.length,
                   itemBuilder: (context, index) {
-                    return CheckboxListTile(
-                        subtitle: Text(tasks[index]),
+                    return ListTile(
+                      // checkbox
+                      leading: Checkbox(
                         value: checked[index],
                         onChanged: (bool? newValue) {
                           setState(() {
                             checked[index] = newValue!;
                           });
-                        });
+                        },
+                      ),
+                      subtitle: Text(tasks[index]),
+                      //  delete button
+                      trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            setState(() {
+                              tasks.removeAt(index);
+                              checked.removeAt(index);
+                            });
+                          }),
+                    );
                   }),
             ),
+
             TextField(
               // attach the controller to textfield
               controller: _controller,
+              style: Theme.of(context).textTheme.bodyMedium,
               decoration: InputDecoration(
                 hintText: 'Enter task name',
               ),
             ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: addTask,
-              child: Text('Add'),
+              child: Text('Add', style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),
